@@ -4,7 +4,7 @@ import "./App.css";
 import Header from "./Header";
 import Nav from "./Nav";
 import Button from "./Button";
-import { buttons, iconMap, gradientMap } from "./data";
+import { buttons, iconMap } from "./data";
 function App() {
   const [selectedButton, setSelectedButton] = useState([]);
   const [selectedCount, setSelectedCount] = useState(0);
@@ -13,15 +13,21 @@ function App() {
   const [forwardCount, setForwardCount] = useState(0);
   const [influenceCount, setInfluencedCount] = useState(0);
   const [acceptCount, setAcceptCount] = useState(0);
+  const [worldCount, setWorldCount] = useState(0);
+  const [myselfCount, setMyselfCount] = useState(0);
 
   const [clickJumpAnimation, setClickJumpAnimation] = useState(true);
   const [gridFirst, setGridFirst] = useState([null, null, null]);
   const [gridSecond, setGridSecond] = useState([null, null, null]);
   const [gridThird, setGridThird] = useState([null, null, null]);
   const [gridFourth, setGridFourth] = useState([null, null, null]);
+  const [gridFifth, setGridFifth] = useState([null, null, null]);
+  const [gridSixth, setGridSixth] = useState([null, null, null]);
+
   const [selectedForPlacement, setSelectedForPlacement] = useState(null);
   const [placedButtonsFirst, setPlacedButtonsFirst] = useState([]);
   const [placedButtonSecond, setPlacedButtonSecond] = useState([]);
+  const [placedButtonThird, setPlacedButtonThird] = useState([]);
 
   const handleSelection = (id) => {
     if (
@@ -52,10 +58,6 @@ function App() {
   const handlePlaceInGrid = (gridType, slotIndex) => {
     if (!selectedForPlacement) return;
 
-    // if (placedButtonsFirst.includes(selectedForPlacement)) {
-    //   alert("Already placed");
-    //   return;
-    // }
     if (gridType === "grounded") {
       if (placedButtonsFirst.includes(selectedForPlacement)) {
         alert("Already placed");
@@ -125,9 +127,42 @@ function App() {
       });
 
       setAcceptCount((count) => count + 1);
-    }
+      //-----------------------------------------------------------------------------------//////////////////////////
+    } else if (gridType === "world") {
+      if (placedButtonThird.includes(selectedForPlacement)) {
+        alert("Already placed");
+        return;
+      }
+      if (gridFifth[slotIndex] !== null) {
+        alert("Slot already occupied!");
+        return;
+      }
+      setPlacedButtonThird((prev) => [...prev, selectedForPlacement]);
+      setGridFifth((prevSlots) => {
+        const updatedSlots = [...prevSlots];
+        updatedSlots[slotIndex] = selectedForPlacement;
+        return updatedSlots;
+      });
 
-    // setPlacedButtonsFirst((prev) => [...prev, selectedForPlacement]);
+      setWorldCount((count) => count + 1);
+    } else if (gridType === "myself") {
+      if (placedButtonThird.includes(selectedForPlacement)) {
+        alert("Already placed");
+        return;
+      }
+      if (gridSixth[slotIndex] !== null) {
+        alert("Slot already occupied!");
+        return;
+      }
+      setPlacedButtonThird((prev) => [...prev, selectedForPlacement]);
+      setGridSixth((prevSlots) => {
+        const updatedSlots = [...prevSlots];
+        updatedSlots[slotIndex] = selectedForPlacement;
+        return updatedSlots;
+      });
+
+      setMyselfCount((count) => count + 1);
+    }
 
     setSelectedForPlacement(null);
   };
@@ -139,7 +174,7 @@ function App() {
     if (gridType === "grounded") {
       setGridFirst((prevSlots) => {
         const updatedSlots = [...prevSlots];
-        removedButtonId = updatedSlots[index]; // Capture the ID BEFORE removing it
+        removedButtonId = updatedSlots[index];
         updatedSlots[index] = null;
         return updatedSlots;
       });
@@ -167,7 +202,23 @@ function App() {
         updatedSlots[index] = null;
         return updatedSlots;
       });
-      setInfluencedCount((prev) => prev - 1);
+      setAcceptCount((prev) => prev - 1);
+    } else if (gridType === "world") {
+      setGridFifth((prevSlots) => {
+        const updatedSlots = [...prevSlots];
+        removedButtonId = updatedSlots[index];
+        updatedSlots[index] = null;
+        return updatedSlots;
+      });
+      setWorldCount((prev) => prev - 1);
+    } else if (gridType === "myself") {
+      setGridSixth((prevSlots) => {
+        const updatedSlots = [...prevSlots];
+        removedButtonId = updatedSlots[index];
+        updatedSlots[index] = null;
+        return updatedSlots;
+      });
+      setMyselfCount((prev) => prev - 1);
     }
 
     setPlacedButtonsFirst((prev) => {
@@ -192,15 +243,24 @@ function App() {
 
       return updatedPlacedButton;
     });
+    setPlacedButtonThird((prev) => {
+      if (removedButtonId === null || removedButtonId === undefined) {
+        console.warn("Removed button ID is undefined! Skipping removal.");
+        return prev;
+      }
+      const updatedPlacedButton = prev.filter(
+        (btnId) => btnId !== removedButtonId
+      );
 
-    // ✅ Ensure selectedButtons is updated properly
+      return updatedPlacedButton;
+    });
+
     setSelectedButton((prev) => {
       if (removedButtonId === null || removedButtonId === undefined)
         return prev;
       return prev.filter((btnId) => btnId !== removedButtonId);
     });
 
-    // ✅ Reset selection state
     setSelectedForPlacement(null);
   };
 
@@ -443,10 +503,107 @@ function App() {
             );
           })}
         </div>{" "}
+      </div>{" "}
+      {/* ---------------------------------------------------------------------LAST */}
+      <div className="grid-second">
+        <div className="second-section-title-wrap">
+          <h2 className="second-section-title">
+            The world <span className="pop-red">expects</span> from me
+          </h2>
+          <progress value={worldCount} max={3} className="progress-main">
+            2
+          </progress>
+        </div>
+        <div className="button-grid-box">
+          {gridFifth.map((buttonId, index) => {
+            const btn = buttons.find((b) => b.id === buttonId);
+            const iconPath = iconMap[btn?.name];
+            return (
+              <div
+                key={index}
+                className={`grid-slot ${
+                  selectedForPlacement ? "second-button-selected" : ""
+                }`}
+              >
+                {btn ? (
+                  <>
+                    <Button
+                      id={index}
+                      label={btn.name}
+                      iconPath={iconPath}
+                      gradient={btn.gradient}
+                      action={removeFromGrid}
+                      extraArg={"world"}
+                    />
+                  </>
+                ) : (
+                  <button
+                    className="drop-box"
+                    onClick={() => handlePlaceInGrid("world", index)}
+                  >
+                    tap to select
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>{" "}
+        {/* ----------------------------------------------------  */}
+        <div className="second-section-title-wrap-2">
+          <h2 className="second-section-title">
+            I need for <span className="pop-red">myself</span>
+          </h2>
+          <progress value={myselfCount} max={3} className="progress-main">
+            2
+          </progress>
+        </div>
+        <div className="button-grid-box-2">
+          {gridSixth.map((buttonId, index) => {
+            const btn = buttons.find((b) => b.id === buttonId);
+            const iconPath = iconMap[btn?.name];
+            return (
+              <div
+                key={index}
+                className={`grid-slot ${
+                  selectedForPlacement ? "second-button-selected" : ""
+                }`}
+              >
+                {btn ? (
+                  <div className="dropped-button">
+                    <Button
+                      id={index}
+                      label={btn.name}
+                      iconPath={iconPath}
+                      gradient={btn.gradient}
+                      action={removeFromGrid}
+                      extraArg={"myself"}
+                    />
+                  </div>
+                ) : (
+                  <button
+                    className="drop-box"
+                    onClick={() => handlePlaceInGrid("myself", index)}
+                  >
+                    tap to select
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>{" "}
+      </div>
+      <div style={{ height: "200px" }}></div>
+      <div>
+        get a reflection from others
+        <button>icon</button>
+      </div>
+      <div>
+        leave a guiding thought
+        <button>icon</button>
       </div>
       <div style={{ height: "200px" }}></div>
     </div>
   );
 }
-// placedButtons.length === 3 && <button> NEXT</button>
+
 export default App;
