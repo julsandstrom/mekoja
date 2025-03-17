@@ -41,22 +41,24 @@ const Header = ({
           Pick three values that resonate with you.
         </p>
       </div>
-      <div>
+      <div className="main-selection-status">
         {" "}
-        <h4 className="">
-          <span className={selectedCount === 3 ? "highlight-max" : ""}>
-            {selectedCount}
-          </span>{" "}
-          out of{" "}
-          <span className={selectedCount === 3 ? "highlight-max" : ""}>3</span>{" "}
-          selected
-        </h4>
-        <div>
-          <progress value={selectedCount} max={3} className="progress-main">
-            2
-          </progress>
+        <div className="progress-random">
+          <div>
+            <h4 className="amount-selected-text">
+              <span className={selectedCount === 3 ? "highlight-max" : ""}>
+                {selectedCount}
+              </span>{" "}
+              out of{" "}
+              <span className={selectedCount === 3 ? "highlight-max" : ""}>
+                3
+              </span>{" "}
+              selected
+            </h4>
+            <progress className="progress-main" value={selectedCount} max={3} />
+          </div>
           <button onClick={handleRandomize} className="random-button">
-            randomize
+            <img src="src\assets\icons\dices.svg" alt="dice icon" /> randomize
           </button>
         </div>
       </div>

@@ -4,7 +4,7 @@ html,
 body {
   width: 100vw;
   margin: 0;
-  background: url("./assets/background-400.png") no-repeat center center;
+  background: url("./assets/background-400-v2.png") no-repeat center center;
   background-size: 100% 100%;
   background-position: top center;
 }
@@ -43,10 +43,7 @@ body {
   color: #cc4848;
   font-weight: 600;
 }
-.pop-red {
-  color: #cc4848;
-  font-size: 1.1rem;
-}
+
 h4 {
   margin: 0;
   padding: 0;
@@ -55,36 +52,77 @@ h4 {
   font-size: 14px;
 }
 .progress-main {
-  width: 140px;
+  width: 120px;
   height: 15px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3),
     0 1px 3px rgba(255, 255, 255, 0.4) inset;
   margin-left: 30px;
+  border: none;
+  background-color: #f5f5f5;
+  color: #cc4848;
+}
+.progress-main::-webkit-progress-value {
+  background-color: #cc4848;
+  border-radius: 5px;
+  transition: width 1.5s ease-in-out;
 }
 
+/* ✅ Smooth transition for Firefox */
+.progress-main::-moz-progress-bar {
+  background-color: #cc4848;
+  transition: width 1.5s ease-in-out !important;
+}
 progress::-webkit-progress-bar {
   background-color: #e0e0e0;
   border-radius: 5px;
+  border: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3),
     0 1px 3px rgba(255, 255, 255, 0.4) inset;
 }
 
 progress::-webkit-progress-value {
-  background-color: #cc4848;
+  background-color: #cc4848 !important;
   border-radius: 5px;
+  border: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3),
     0 1px 3px rgba(255, 255, 255, 0.4) inset;
 }
+progress::-webkit-progress-value {
+  background-color: #cc4848 !important;
+}
 
+progress::-moz-progress-bar {
+  background-color: #cc4848 !important;
+}
+
+progress::-ms-fill {
+  background-color: #cc4848 !important;
+}
+.main-selection-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.amount-selected-text {
+  align-self: start;
+  padding-left: 40px;
+}
+.progress-random {
+  display: flex;
+  align-items: flex-end;
+}
 .random-button {
-  background-color: #f5f5f5;
-  color: #363636;
-  width: 65px;
-  height: 32px;
+  background: none;
+  border: 1px solid #f5f5f5;
+  color: #f5f5f5;
+  width: 90px;
+  height: 40px;
   font-size: 12px;
   margin-left: 10px;
+  padding: 5px;
 }
 button {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3),
@@ -119,10 +157,16 @@ button {
 }
 
 .button-selected {
-  border: none;
   border: 2px solid white;
   transform: scale(1.1);
   transition: 1.2s;
+}
+.button-selected-modal {
+  border: 2px solid white !important;
+  transform: scale(1.1);
+  transition: 1.2s;
+  box-sizing: content-box;
+  overflow: visible;
 }
 .second-button-selected {
   border-radius: 8px;
@@ -144,15 +188,18 @@ Button:active {
   z-index: 1000;
   position: fixed;
   bottom: 0;
-  border: 2px solid green;
+  left: 0;
+  right: 0;
   background-color: #272727;
-  justify-self: center;
-  width: 390px;
-  max-height: 80px;
 
+  max-height: 90px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   padding: 10px;
+
+  will-change: transform;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .second-buttons {
   border: none;
@@ -222,7 +269,7 @@ Button:active {
 }
 
 .second-section-title {
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 500;
   text-align: center;
 }
@@ -243,7 +290,7 @@ Button:active {
 }
 .grid-second {
   display: grid;
-  grid-template-columns: 165px 70px 165px;
+  grid-template-columns: 160px 50px 160px;
   grid-template-rows: auto;
 }
 .second-section-title-wrap {
@@ -265,7 +312,36 @@ Button:active {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  align-items: flex-end;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+h2 {
+  padding: 0;
+  margin: 0;
+}
+.reflections-title-container {
+  display: flex;
+  flex-direction: column;
+}
+.pop-red {
+  color: #cc4848;
+  font-size: 1.3rem;
+}
+.reflections-pop {
+  font-size: 1.4rem;
+  color: #cc4848;
+  justify-self: center;
+  align-self: center;
+  font-weight: 600;
+}
+.reflections-pop-expects {
+  padding-left: 15px;
+  font-size: 1.4rem;
+  color: #cc4848;
+  justify-self: center;
+  align-self: center;
+  font-weight: 600;
 }
 .button-grid-box {
   margin-top: 20px;
@@ -309,4 +385,47 @@ Button:active {
 }
 .grid-button:hover {
   border: 1px solid white;
+}
+.insight-section {
+  display: flex;
+  justify-content: space-around;
+}
+.insight-buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+.insight-buttons {
+  margin-top: 15px;
+  width: 50px;
+  background-color: #f5f5f5;
+}
+.modal-insights {
+  z-index: 1000;
+  position: fixed;
+  bottom: 200px;
+  left: 0;
+  right: 0;
+  background-color: #f5f5f5;
+  color: #363636;
+
+  max-height: 100px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  will-change: transform;
+}
+.close-modal {
+  background-color: #cc4848;
+  font-size: 1rem;
+  width: 60px;
+  height: 50px;
+}
+.date-text {
+  font-size: 0.8rem;
 }

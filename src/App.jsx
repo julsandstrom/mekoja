@@ -28,7 +28,65 @@ function App() {
   const [placedButtonsFirst, setPlacedButtonsFirst] = useState([]);
   const [placedButtonSecond, setPlacedButtonSecond] = useState([]);
   const [placedButtonThird, setPlacedButtonThird] = useState([]);
+  const [messageRead, setMessageRead] = useState(false);
 
+  const [isShowingInsights, setIsShowingInsights] = useState(false);
+
+  const guidance = [
+    {
+      id: 1,
+      message: "You are stronger than you think.",
+      date: "15 mars 2025",
+    },
+    {
+      id: 2,
+      message: "Trust the process.",
+      date: "10 mars 2025",
+    },
+    {
+      id: 3,
+      message: "One step at a time.",
+      date: "13 mars 2025",
+    },
+    {
+      id: 4,
+      message: "Progress, not perfection.",
+      date: "11 mars 2025",
+    },
+    {
+      id: 5,
+      message: "Your effort matters.",
+      date: "06 mars 2025",
+    },
+    {
+      id: 6,
+      message: "Growth comes from challenges.",
+      date: "26 mars 2025",
+    },
+    {
+      id: 7,
+      message: "Your story is still unfolding.",
+      date: "29 mars 2025",
+    },
+    {
+      id: 8,
+      message: "Keep going, even when it's tough.",
+      date: "05 mars 2025",
+    },
+    {
+      id: 9,
+      message: "Believe in yourself.",
+      date: "02 mars 2025",
+    },
+    {
+      id: 10,
+      message:
+        "No shared wisdom today, but take a moment to reflect on your own.",
+      date: "31 mars 2025",
+    },
+  ];
+  const randomIndex = Math.floor(Math.random() * guidance.length);
+  const selectedGuidance = guidance[randomIndex];
   const handleSelection = (id) => {
     if (
       gridFirst.includes(id) ||
@@ -260,10 +318,37 @@ function App() {
         return prev;
       return prev.filter((btnId) => btnId !== removedButtonId);
     });
-
+    setMessageRead(false);
     setSelectedForPlacement(null);
   };
 
+  const showInsights = () => {
+    if (messageRead) {
+      alert("Already read, come back when you have new reflections");
+      return;
+    }
+    if (
+      placedButtonsFirst.length >= 3 ||
+      placedButtonSecond.length >= 3 ||
+      placedButtonThird.length >= 3
+    ) {
+      setIsShowingInsights(true);
+      setMessageRead(true);
+      console.log("showing");
+    } else {
+      alert("take a moment to reflect ");
+    }
+  };
+  const leaveGuidance = () => {
+    console.log("showing");
+  };
+  const closeGuidance = () => {
+    setIsShowingInsights(false);
+  };
+
+  useEffect(() => {
+    console.log(messageRead);
+  }, [messageRead]);
   return (
     <div className="page-layout">
       <Nav />
@@ -322,7 +407,7 @@ function App() {
               action={() => handleSelectForPlacement(btn.id)}
               gradient={btn.gradient}
               className={`second-buttons ${
-                selectedForPlacement === btn.id ? "button-selected" : ""
+                selectedForPlacement === btn.id ? "button-selected-modal" : ""
               }`}
             />
           ) : null;
@@ -332,7 +417,7 @@ function App() {
       <div className="grid-second">
         <div className="second-section-title-wrap">
           <h2 className="second-section-title">
-            What keeps me <span className="pop-red">grounded</span>
+            What keeps me <span className="reflections-pop">grounded</span>
           </h2>
           <progress value={groundedCount} max={3} className="progress-main">
             2
@@ -375,7 +460,7 @@ function App() {
         {/* ----------------------------------------------------  */}
         <div className="second-section-title-wrap-2">
           <h2 className="second-section-title">
-            What pushes me <span className="pop-red">forward</span>
+            What pushes me <span className="reflections-pop">forward</span>
           </h2>
           <progress value={forwardCount} max={3} className="progress-main">
             2
@@ -419,9 +504,10 @@ function App() {
       {/* IINIFLUUUUUUUUUUUUUUUUUUENCEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE */}
       <div className="grid-second">
         <div className="second-section-title-wrap">
-          <h2 className="second-section-title">
-            What I <span className="pop-red">influence</span>
-          </h2>
+          <div className="reflections-title-container">
+            <h2 className="second-section-title">What I</h2>
+            <span className="reflections-pop">influence</span>
+          </div>
           <progress value={influenceCount} max={3} className="progress-main">
             2
           </progress>
@@ -462,9 +548,10 @@ function App() {
         </div>{" "}
         {/* ----------------------------------------------------  */}
         <div className="second-section-title-wrap-2">
-          <h2 className="second-section-title">
-            Things I need to <span className="pop-red">accept</span>
-          </h2>
+          <div className="reflections-title-container">
+            <h2 className="second-section-title">Things I need to</h2>
+            <span className="reflections-pop">accept</span>
+          </div>
           <progress value={acceptCount} max={3} className="progress-main">
             2
           </progress>
@@ -507,9 +594,12 @@ function App() {
       {/* ---------------------------------------------------------------------LAST */}
       <div className="grid-second">
         <div className="second-section-title-wrap">
-          <h2 className="second-section-title">
-            The world <span className="pop-red">expects</span> from me
-          </h2>
+          <div className="reflections-title-container">
+            <h2 className="second-section-title">The world </h2>
+            <h2 className="second-section-title">
+              <span className="reflections-pop-expects">expects</span> from me
+            </h2>
+          </div>
           <progress value={worldCount} max={3} className="progress-main">
             2
           </progress>
@@ -550,9 +640,12 @@ function App() {
         </div>{" "}
         {/* ----------------------------------------------------  */}
         <div className="second-section-title-wrap-2">
-          <h2 className="second-section-title">
-            I need for <span className="pop-red">myself</span>
-          </h2>
+          <div className="reflections-title-container">
+            <h2 className="second-section-title">I need</h2>{" "}
+            <h2 className="second-section-title">
+              for <span className="reflections-pop">myself</span>
+            </h2>
+          </div>
           <progress value={myselfCount} max={3} className="progress-main">
             2
           </progress>
@@ -593,13 +686,39 @@ function App() {
         </div>{" "}
       </div>
       <div style={{ height: "200px" }}></div>
-      <div>
-        get a reflection from others
-        <button>icon</button>
-      </div>
-      <div>
-        leave a guiding thought
-        <button>icon</button>
+      {isShowingInsights && (
+        <div className="modal-insights">
+          <div>
+            <h5>{selectedGuidance.message}</h5>
+            <span className="date-text">
+              added: {selectedGuidance.date}
+            </span>{" "}
+          </div>
+          <button className="close-modal" onClick={closeGuidance}>
+            close
+          </button>
+        </div>
+      )}
+      <div className="insight-section">
+        {" "}
+        <div className="insight-buttons-container">
+          get a reflection from others
+          <button className="insight-buttons" onClick={showInsights}>
+            <img
+              src="src\assets\icons\messages-square.svg"
+              alt="share message icon"
+            />
+          </button>
+        </div>
+        <div className="insight-buttons-container">
+          leave a guiding thought
+          <button className="insight-buttons" onClick={leaveGuidance}>
+            <img
+              src="src\assets\icons\message-square-share.svg"
+              alt="message icon"
+            />
+          </button>
+        </div>
       </div>
       <div style={{ height: "200px" }}></div>
     </div>
