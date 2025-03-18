@@ -1,5 +1,6 @@
 import React from "react";
-
+import squareMessage from "./assets/icons/messages-square.svg";
+import messageSquare from "./assets/icons/message-square-share.svg";
 const InsightButtons = ({ handleShareGuidance, showInsights }) => {
   return (
     <div className="insight-section">
@@ -9,7 +10,7 @@ const InsightButtons = ({ handleShareGuidance, showInsights }) => {
         <button className="insight-buttons" onClick={showInsights}>
           <img
             className="message-square-icon"
-            src="src\assets\icons\messages-square.svg"
+            src={squareMessage}
             alt="share message icon"
           />
         </button>
@@ -19,7 +20,7 @@ const InsightButtons = ({ handleShareGuidance, showInsights }) => {
         <button className="insight-buttons" onClick={handleShareGuidance}>
           <img
             className="message-square-icon"
-            src="src\assets\icons\message-square-share.svg"
+            src={messageSquare}
             alt="message icon"
           />
         </button>

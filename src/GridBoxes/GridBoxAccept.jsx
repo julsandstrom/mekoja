@@ -1,6 +1,6 @@
 import { buttons, iconMap } from "../data";
 import Button from "../Button";
-
+import check from "../assets/icons/check.svg";
 const GridBoxAccept = ({
   gridFourth,
   selectedForPlacement,
@@ -36,7 +36,7 @@ const GridBoxAccept = ({
                 {placedButtonSecond.length >= 3 ? (
                   <button className="drop-box-text">
                     <img
-                      src="src\assets\icons\check.svg"
+                      src={check}
                       alt="check icon"
                       style={{ filter: "invert(1)" }}
                     />

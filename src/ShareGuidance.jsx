@@ -8,7 +8,7 @@ const ShareGuidance = ({ guidance, closeShareModal }) => {
       </p>
       <span>Leave a message:</span>
       <select>
-        {guidance.map((item) => (
+        {guidance.slice(0, -1).map((item) => (
           <option key={item.id}>{item.message}</option>
         ))}
       </select>

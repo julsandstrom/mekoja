@@ -724,7 +724,8 @@ h6 {
   transition: opacity 2s ease-in-out;
   display: flex;
   flex-direction: column;
-  padding-top: 20px;
+  padding-top: 10px;
+  padding-bottom: 20px;
 }
 select {
   width: 200px;
@@ -911,6 +912,10 @@ select {
   }
   .share-guidance-modal {
     font-size: 1.1rem;
+    width: 500px;
+    align-self: center;
+    justify-self: center;
+    border-radius: 8px;
   }
   .thanks-text-1 {
     width: 500px;
@@ -1105,6 +1110,7 @@ select {
     align-self: center;
     justify-self: center;
     border-radius: 8px;
+    padding-bottom: 20px;
   }
 
   .thanks-text-1 {

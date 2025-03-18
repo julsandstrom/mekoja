@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./App.css";
 import Header from "./Header";
 import Nav from "./Nav";
-
+import logo from "./assets/logo.svg";
 import { guidance } from "./guidance.jsx";
 import InsightMessage from "./InsightMessage";
 
@@ -589,7 +589,7 @@ function App() {
         <button className="reset-button" onClick={handleReset}>
           reset
         </button>
-        <img src="\src\assets\logo.svg" alt="mekoja logo" className="logo" />
+        <img src={logo} alt="mekoja logo" className="logo" />
       </div>
       <div style={{ height: "200px" }}></div>
     </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import dice from "./assets/icons/dices.svg";
 const Header = ({
   selectedCount,
   setSelectedCount,
@@ -62,7 +63,7 @@ const Header = ({
             />
           </div>
           <button onClick={handleRandomize} className="random-button">
-            <img src="src\assets\icons\dices.svg" alt="dice icon" /> randomize
+            <img src={dice} alt="dice icon" /> randomize
           </button>
         </div>
       </div>
