@@ -1,22 +1,37 @@
+import users from "./assets/icons/users.svg";
+import mountain from "./assets/icons/mountain.svg";
+import moon from "./assets/icons/moon.svg";
+import briefcase from "./assets/icons/briefcase-business.svg";
+import smile from "./assets/icons/smile.svg";
+import scale from "./assets/icons/scale.svg";
+import heartPulse from "./assets/icons/heart-pulse.svg";
+import bird from "./assets/icons/bird.svg";
+import flame from "./assets/icons/flame.svg";
+import trophy from "./assets/icons/trophy.svg";
+import palette from "./assets/icons/palette.svg";
+import lightbulb from "./assets/icons/lightbulb.svg";
+
 const gradientMap = {
   "#27AE60": "linear-gradient(135deg, #27AE60, #007E35)",
   "#3498DB": "linear-gradient(135deg, #3498DB, #1C5276)",
   "#E67E22": "linear-gradient(135deg, #DD802B, #A54E00)",
 };
+
 const iconMap = {
-  connection: "/src/assets/icons/users.svg",
-  adventure: "/src/assets/icons/mountain.svg",
-  spirituality: "/src/assets/icons/moon.svg",
-  career: "/src/assets/icons/briefcase-business.svg",
-  happiness: "/src/assets/icons/smile.svg",
-  balance: "/src/assets/icons/scale.svg",
-  health: "/src/assets/icons/heart-pulse.svg",
-  freedom: "/src/assets/icons/bird.svg",
-  passion: "/src/assets/icons/flame.svg",
-  success: "/src/assets/icons/trophy.svg",
-  creativity: "/src/assets/icons/palette.svg",
-  purpose: "/src/assets/icons/lightbulb.svg",
+  connection: users,
+  adventure: mountain,
+  spirituality: moon,
+  career: briefcase,
+  happiness: smile,
+  balance: scale,
+  health: heartPulse,
+  freedom: bird,
+  passion: flame,
+  success: trophy,
+  creativity: palette,
+  purpose: lightbulb,
 };
+
 const buttons = [
   { id: 1, name: "connection", color: "#3498DB" },
   { id: 2, name: "adventure", color: "#27AE60" },

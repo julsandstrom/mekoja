@@ -27,12 +27,12 @@ const guidance = [
   {
     id: 6,
     message: "Growth comes from challenges.",
-    date: "26 mars 2025",
+    date: "02 feb 2025",
   },
   {
     id: 7,
     message: "Your story is still unfolding.",
-    date: "29 mars 2025",
+    date: "15 feb 2025",
   },
   {
     id: 8,

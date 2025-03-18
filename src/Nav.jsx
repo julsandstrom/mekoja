@@ -1,9 +1,8 @@
-import React from "react";
-
+import logo from "./assets/logo.svg";
 const Nav = () => {
   return (
     <nav className="nav">
-      <img src="\src\assets\logo.svg" alt="mekoja logo" className="logo" />
+      <img src={logo} alt="mekoja logo" className="logo" />
     </nav>
   );
 };
