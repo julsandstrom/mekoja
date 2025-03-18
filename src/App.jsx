@@ -30,8 +30,17 @@ function App() {
   const [placedButtonThird, setPlacedButtonThird] = useState([]);
   const [messageRead, setMessageRead] = useState(false);
 
-  const [isShowingInsights, setIsShowingInsights] = useState(false);
+  const [hasShared, setHasShared] = useState(false);
 
+  const [isShowingInsights, setIsShowingInsights] = useState(false);
+  const [returnMessage, setReturnMessage] = useState(false);
+  const [alreadyReadMessage, setAlreadyReadMessage] = useState(false);
+  const [alreadySharedGuidance, setAlreadySharedGuidance] = useState(false);
+
+  const [alreadyPlaced, setAlreadyPlaced] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
+  const [shareGuidance, setShareGuidance] = useState(false);
+  const [finalThanks, setFinalThanks] = useState(false);
   const guidance = [
     {
       id: 1,
@@ -82,7 +91,7 @@ function App() {
       id: 10,
       message:
         "No shared wisdom today, but take a moment to reflect on your own.",
-      date: "31 mars 2025",
+      date: "",
     },
   ];
   const randomIndex = Math.floor(Math.random() * guidance.length);
@@ -107,6 +116,7 @@ function App() {
         return prev;
       }
     });
+    setSelectedForPlacement(id);
   };
 
   const handleSelectForPlacement = (id) => {
@@ -114,11 +124,14 @@ function App() {
   };
 
   const handlePlaceInGrid = (gridType, slotIndex) => {
-    if (!selectedForPlacement) return;
+    if (!selectedForPlacement) {
+      return;
+    }
 
     if (gridType === "grounded") {
       if (placedButtonsFirst.includes(selectedForPlacement)) {
-        alert("Already placed");
+        setAlreadyPlaced(true);
+        setTimeout(() => setAlreadyPlaced(false), 5000);
         return;
       }
       if (gridFirst[slotIndex] !== null) {
@@ -135,7 +148,8 @@ function App() {
       setGroundedCount((count) => count + 1);
     } else if (gridType === "forward") {
       if (placedButtonsFirst.includes(selectedForPlacement)) {
-        alert("Already placed");
+        setAlreadyPlaced(true);
+        setTimeout(() => setAlreadyPlaced(false), 3000);
         return;
       }
       if (gridSecond[slotIndex] !== null) {
@@ -153,7 +167,8 @@ function App() {
       setForwardCount((count) => count + 1);
     } else if (gridType === "influence") {
       if (placedButtonSecond.includes(selectedForPlacement)) {
-        alert("Already placed");
+        setAlreadyPlaced(true);
+        setTimeout(() => setAlreadyPlaced(false), 3000);
         return;
       }
       if (gridThird[slotIndex] !== null) {
@@ -170,7 +185,8 @@ function App() {
       setInfluencedCount((count) => count + 1);
     } else if (gridType === "accept") {
       if (placedButtonSecond.includes(selectedForPlacement)) {
-        alert("Already placed");
+        setAlreadyPlaced(true);
+        setTimeout(() => setAlreadyPlaced(false), 3000);
         return;
       }
       if (gridFourth[slotIndex] !== null) {
@@ -188,7 +204,8 @@ function App() {
       //-----------------------------------------------------------------------------------//////////////////////////
     } else if (gridType === "world") {
       if (placedButtonThird.includes(selectedForPlacement)) {
-        alert("Already placed");
+        setAlreadyPlaced(true);
+        setTimeout(() => setAlreadyPlaced(false), 3000);
         return;
       }
       if (gridFifth[slotIndex] !== null) {
@@ -205,7 +222,8 @@ function App() {
       setWorldCount((count) => count + 1);
     } else if (gridType === "myself") {
       if (placedButtonThird.includes(selectedForPlacement)) {
-        alert("Already placed");
+        setAlreadyPlaced(true);
+        setTimeout(() => setAlreadyPlaced(false), 3000);
         return;
       }
       if (gridSixth[slotIndex] !== null) {
@@ -227,13 +245,22 @@ function App() {
 
   const removeFromGrid = (index, gridType) => {
     let removedButtonId = null;
-
-    //functional state updates to avoid stale values
     if (gridType === "grounded") {
       setGridFirst((prevSlots) => {
         const updatedSlots = [...prevSlots];
         removedButtonId = updatedSlots[index];
         updatedSlots[index] = null;
+        setPlacedButtonsFirst((prev) => {
+          if (removedButtonId === null || removedButtonId === undefined) {
+            console.warn("Removed button ID is undefined! Skipping removal.");
+            return prev;
+          }
+          const updatedPlacedButtons = prev.filter(
+            (btnId) => btnId !== removedButtonId
+          );
+
+          return updatedPlacedButtons;
+        });
         return updatedSlots;
       });
       setGroundedCount((prev) => prev - 1);
@@ -242,6 +269,17 @@ function App() {
         const updatedSlots = [...prevSlots];
         removedButtonId = updatedSlots[index];
         updatedSlots[index] = null;
+        setPlacedButtonsFirst((prev) => {
+          if (removedButtonId === null || removedButtonId === undefined) {
+            console.warn("Removed button ID is undefined! Skipping removal.");
+            return prev;
+          }
+          const updatedPlacedButtons = prev.filter(
+            (btnId) => btnId !== removedButtonId
+          );
+
+          return updatedPlacedButtons;
+        });
         return updatedSlots;
       });
       setForwardCount((prev) => prev - 1);
@@ -250,6 +288,17 @@ function App() {
         const updatedSlots = [...prevSlots];
         removedButtonId = updatedSlots[index];
         updatedSlots[index] = null;
+        setPlacedButtonSecond((prev) => {
+          if (removedButtonId === null || removedButtonId === undefined) {
+            console.warn("Removed button ID is undefined! Skipping removal.");
+            return prev;
+          }
+          const updatedPlacedButton = prev.filter(
+            (btnId) => btnId !== removedButtonId
+          );
+
+          return updatedPlacedButton;
+        });
         return updatedSlots;
       });
       setInfluencedCount((prev) => prev - 1);
@@ -258,6 +307,17 @@ function App() {
         const updatedSlots = [...prevSlots];
         removedButtonId = updatedSlots[index];
         updatedSlots[index] = null;
+        setPlacedButtonSecond((prev) => {
+          if (removedButtonId === null || removedButtonId === undefined) {
+            console.warn("Removed button ID is undefined! Skipping removal.");
+            return prev;
+          }
+          const updatedPlacedButton = prev.filter(
+            (btnId) => btnId !== removedButtonId
+          );
+
+          return updatedPlacedButton;
+        });
         return updatedSlots;
       });
       setAcceptCount((prev) => prev - 1);
@@ -266,6 +326,17 @@ function App() {
         const updatedSlots = [...prevSlots];
         removedButtonId = updatedSlots[index];
         updatedSlots[index] = null;
+        setPlacedButtonThird((prev) => {
+          if (removedButtonId === null || removedButtonId === undefined) {
+            console.warn("Removed button ID is undefined! Skipping removal.");
+            return prev;
+          }
+          const updatedPlacedButton = prev.filter(
+            (btnId) => btnId !== removedButtonId
+          );
+
+          return updatedPlacedButton;
+        });
         return updatedSlots;
       });
       setWorldCount((prev) => prev - 1);
@@ -274,83 +345,118 @@ function App() {
         const updatedSlots = [...prevSlots];
         removedButtonId = updatedSlots[index];
         updatedSlots[index] = null;
+        setPlacedButtonThird((prev) => {
+          if (removedButtonId === null || removedButtonId === undefined) {
+            console.warn("Removed button ID is undefined! Skipping removal.");
+            return prev;
+          }
+          const updatedPlacedButton = prev.filter(
+            (btnId) => btnId !== removedButtonId
+          );
+
+          return updatedPlacedButton;
+        });
         return updatedSlots;
       });
       setMyselfCount((prev) => prev - 1);
     }
-
-    setPlacedButtonsFirst((prev) => {
-      if (removedButtonId === null || removedButtonId === undefined) {
-        console.warn("Removed button ID is undefined! Skipping removal.");
-        return prev;
-      }
-      const updatedPlacedButtons = prev.filter(
-        (btnId) => btnId !== removedButtonId
-      );
-
-      return updatedPlacedButtons;
-    });
-    setPlacedButtonSecond((prev) => {
-      if (removedButtonId === null || removedButtonId === undefined) {
-        console.warn("Removed button ID is undefined! Skipping removal.");
-        return prev;
-      }
-      const updatedPlacedButton = prev.filter(
-        (btnId) => btnId !== removedButtonId
-      );
-
-      return updatedPlacedButton;
-    });
-    setPlacedButtonThird((prev) => {
-      if (removedButtonId === null || removedButtonId === undefined) {
-        console.warn("Removed button ID is undefined! Skipping removal.");
-        return prev;
-      }
-      const updatedPlacedButton = prev.filter(
-        (btnId) => btnId !== removedButtonId
-      );
-
-      return updatedPlacedButton;
-    });
 
     setSelectedButton((prev) => {
       if (removedButtonId === null || removedButtonId === undefined)
         return prev;
       return prev.filter((btnId) => btnId !== removedButtonId);
     });
-    setMessageRead(false);
+
     setSelectedForPlacement(null);
   };
 
   const showInsights = () => {
     if (messageRead) {
-      alert("Already read, come back when you have new reflections");
+      setAlreadyReadMessage(true);
       return;
     }
     if (
-      placedButtonsFirst.length >= 3 ||
-      placedButtonSecond.length >= 3 ||
+      placedButtonsFirst.length >= 3 &&
+      placedButtonSecond.length >= 3 &&
       placedButtonThird.length >= 3
     ) {
+      setReturnMessage(false);
       setIsShowingInsights(true);
       setMessageRead(true);
-      console.log("showing");
     } else {
-      alert("take a moment to reflect ");
+      setReturnMessage(true);
+      setTimeout(() => setReturnMessage(false), 7000);
     }
   };
-  const leaveGuidance = () => {
-    console.log("showing");
+  const closeShareModal = () => {
+    setFinalThanks(true);
+    setShareGuidance(false);
   };
   const closeGuidance = () => {
+    setShareGuidance(false);
     setIsShowingInsights(false);
+    setIsFadingOut(true);
+    setTimeout(() => {
+      setIsFadingOut(false);
+    }, 500);
   };
+  const handleShareGuidance = () => {
+    if (hasShared) {
+      setAlreadySharedGuidance(true);
 
-  useEffect(() => {
-    console.log(messageRead);
-  }, [messageRead]);
+      return;
+    }
+    if (
+      placedButtonsFirst.length >= 3 &&
+      placedButtonSecond.length >= 3 &&
+      placedButtonThird.length >= 3
+    ) {
+      setReturnMessage(false);
+      setShareGuidance(true);
+      setHasShared(true);
+    } else {
+      setReturnMessage(true);
+      setTimeout(() => setReturnMessage(false), 5000);
+    }
+  };
+  const handleScrollToNext = () => {
+    const nextSection = document.getElementById("next-section");
+    setClickJumpAnimation(false);
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  const handleReset = () => {
+    setAlreadyPlaced(false);
+    setAlreadySharedGuidance(false);
+    setAlreadyReadMessage(false);
+    setReturnMessage(false);
+    setIsShowingInsights(false);
+    setMessageRead(false);
+    setPlacedButtonThird([]);
+    setPlacedButtonSecond([]);
+    setPlacedButtonsFirst([]);
+    setGridSixth([null, null, null]);
+    setGridFifth([null, null, null]);
+    setGridFourth([null, null, null]);
+    setGridThird([null, null, null]);
+    setGridSecond([null, null, null]);
+    setGridFirst([null, null, null]);
+    setMyselfCount(0);
+    setWorldCount(0);
+    setAcceptCount(0);
+    setInfluencedCount(0);
+    setForwardCount(0);
+    setGroundedCount(0);
+    setSelectedCount(0);
+    setSelectedButton([]);
+    setShareGuidance(false);
+    setHasShared(false);
+
+    setFinalThanks(false);
+  };
   return (
-    <div className="page-layout">
+    <div id="intro" className="page-layout">
       <Nav />
       <Header
         setSelectedCount={setSelectedCount}
@@ -384,13 +490,15 @@ function App() {
       >
         {" "}
         {selectedCount === 3 ? (
-          <img
-            src="src\assets\arrow-down.svg"
-            className={clickJumpAnimation ? "down-arrow" : "down-stop"}
-            onClick={() => setClickJumpAnimation(!clickJumpAnimation)}
-          />
+          <div onClick={handleScrollToNext} className="down-arrow-container">
+            {" "}
+            <img
+              src="src\assets\arrow-down.svg"
+              className={clickJumpAnimation ? "down-arrow" : "down-stop"}
+            />
+          </div>
         ) : (
-          <div style={{ height: "66px" }}> </div>
+          <div style={{ height: "150px" }}> </div>
         )}
       </div>{" "}
       {/* USER MODAL BUTTON LAYOUT */}
@@ -399,310 +507,476 @@ function App() {
           const btn = buttons.find((button) => button.id === id);
           const iconPath = iconMap[btn.name];
           return btn ? (
-            <Button
-              key={btn.id}
-              id={btn.id}
-              iconPath={iconPath}
-              label={btn.name}
-              action={() => handleSelectForPlacement(btn.id)}
-              gradient={btn.gradient}
-              className={`second-buttons ${
-                selectedForPlacement === btn.id ? "button-selected-modal" : ""
-              }`}
-            />
+            <div>
+              <p className="tap-info">Tap to select</p>
+              <Button
+                key={btn.id}
+                id={btn.id}
+                iconPath={iconPath}
+                label={btn.name}
+                action={() => handleSelectForPlacement(btn.id)}
+                gradient={btn.gradient}
+                className={`second-buttons ${
+                  selectedForPlacement === btn.id ? "button-selected-modal" : ""
+                }`}
+              />
+            </div>
           ) : null;
         })}
       </div>
-      {/* --------------------------------------------------------------- */}
-      <div className="grid-second">
-        <div className="second-section-title-wrap">
-          <h2 className="second-section-title">
-            What keeps me <span className="reflections-pop">grounded</span>
-          </h2>
-          <progress value={groundedCount} max={3} className="progress-main">
-            2
-          </progress>
-        </div>
-        <div className="button-grid-box">
-          {gridFirst.map((buttonId, index) => {
-            const btn = buttons.find((b) => b.id === buttonId);
-            const iconPath = iconMap[btn?.name];
-            return (
-              <div
-                key={index}
-                className={`grid-slot ${
-                  selectedForPlacement ? "second-button-selected" : ""
-                }`}
-              >
-                {btn ? (
-                  <>
-                    <Button
-                      id={index}
-                      label={btn.name}
-                      iconPath={iconPath}
-                      gradient={btn.gradient}
-                      action={removeFromGrid}
-                      extraArg={"grounded"}
-                    />
-                  </>
-                ) : (
-                  <button
-                    className="drop-box"
-                    onClick={() => handlePlaceInGrid("grounded", index)}
-                  >
-                    tap to select
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>{" "}
-        {/* ----------------------------------------------------  */}
-        <div className="second-section-title-wrap-2">
-          <h2 className="second-section-title">
-            What pushes me <span className="reflections-pop">forward</span>
-          </h2>
-          <progress value={forwardCount} max={3} className="progress-main">
-            2
-          </progress>
-        </div>
-        <div className="button-grid-box-2">
-          {gridSecond.map((buttonId, index) => {
-            const btn = buttons.find((b) => b.id === buttonId);
-            const iconPath = iconMap[btn?.name];
-            return (
-              <div
-                key={index}
-                className={`grid-slot ${
-                  selectedForPlacement ? "second-button-selected" : ""
-                }`}
-              >
-                {btn ? (
-                  <div className="dropped-button">
-                    <Button
-                      id={index}
-                      label={btn.name}
-                      iconPath={iconPath}
-                      gradient={btn.gradient}
-                      action={removeFromGrid}
-                      extraArg={"forward"}
-                    />
-                  </div>
-                ) : (
-                  <button
-                    className="drop-box"
-                    onClick={() => handlePlaceInGrid("forward", index)}
-                  >
-                    tap to select
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>{" "}
-      </div>
-      {/* IINIFLUUUUUUUUUUUUUUUUUUENCEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE */}
-      <div className="grid-second">
-        <div className="second-section-title-wrap">
-          <div className="reflections-title-container">
-            <h2 className="second-section-title">What I</h2>
-            <span className="reflections-pop">influence</span>
+      <section id="next-section" className="priority-section">
+        <div className="grid-reflection-1">
+          <div className="second-section-title-wrap">
+            <div className="reflections-title-container">
+              <h2 className="second-section-title">What keeps me </h2>
+              <span className="reflections-pop">grounded</span>
+            </div>
+            <progress value={groundedCount} max={3} className="progress-main">
+              2
+            </progress>
           </div>
-          <progress value={influenceCount} max={3} className="progress-main">
-            2
-          </progress>
-        </div>
-        <div className="button-grid-box">
-          {gridThird.map((buttonId, index) => {
-            const btn = buttons.find((b) => b.id === buttonId);
-            const iconPath = iconMap[btn?.name];
-            return (
-              <div
-                key={index}
-                className={`grid-slot ${
-                  selectedForPlacement ? "second-button-selected" : ""
-                }`}
-              >
-                {btn ? (
-                  <>
-                    <Button
-                      id={index}
-                      label={btn.name}
-                      iconPath={iconPath}
-                      gradient={btn.gradient}
-                      action={removeFromGrid}
-                      extraArg={"influence"}
-                    />
-                  </>
-                ) : (
-                  <button
-                    className="drop-box"
-                    onClick={() => handlePlaceInGrid("influence", index)}
-                  >
-                    tap to select
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>{" "}
-        {/* ----------------------------------------------------  */}
-        <div className="second-section-title-wrap-2">
-          <div className="reflections-title-container">
-            <h2 className="second-section-title">Things I need to</h2>
-            <span className="reflections-pop">accept</span>
+          <div className="button-grid-box">
+            {gridFirst.map((buttonId, index) => {
+              const btn = buttons.find((b) => b.id === buttonId);
+              const iconPath = iconMap[btn?.name];
+              return (
+                <div
+                  key={index}
+                  className={`grid-slot ${
+                    selectedForPlacement ? "second-button-selected" : ""
+                  }`}
+                >
+                  {btn ? (
+                    <>
+                      <Button
+                        id={index}
+                        label={btn.name}
+                        iconPath={iconPath}
+                        gradient={btn.gradient}
+                        action={removeFromGrid}
+                        extraArg={"grounded"}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      {placedButtonsFirst.length >= 3 ? (
+                        <button className="drop-box-text">
+                          <img
+                            src="src\assets\icons\check.svg"
+                            alt="check icon"
+                            style={{ filter: "invert(1)" }}
+                          />
+                        </button>
+                      ) : (
+                        <button
+                          className="drop-box"
+                          onClick={() => handlePlaceInGrid("grounded", index)}
+                        >
+                          +
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
           </div>
-          <progress value={acceptCount} max={3} className="progress-main">
-            2
-          </progress>
-        </div>
-        <div className="button-grid-box-2">
-          {gridFourth.map((buttonId, index) => {
-            const btn = buttons.find((b) => b.id === buttonId);
-            const iconPath = iconMap[btn?.name];
-            return (
-              <div
-                key={index}
-                className={`grid-slot ${
-                  selectedForPlacement ? "second-button-selected" : ""
-                }`}
-              >
-                {btn ? (
-                  <div className="dropped-button">
-                    <Button
-                      id={index}
-                      label={btn.name}
-                      iconPath={iconPath}
-                      gradient={btn.gradient}
-                      action={removeFromGrid}
-                      extraArg={"accept"}
-                    />
-                  </div>
-                ) : (
-                  <button
-                    className="drop-box"
-                    onClick={() => handlePlaceInGrid("accept", index)}
-                  >
-                    tap to select
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>{" "}
-      </div>{" "}
-      {/* ---------------------------------------------------------------------LAST */}
-      <div className="grid-second">
-        <div className="second-section-title-wrap">
-          <div className="reflections-title-container">
-            <h2 className="second-section-title">The world </h2>
-            <h2 className="second-section-title">
-              <span className="reflections-pop-expects">expects</span> from me
-            </h2>
+          {/* ----------------------------------------------------  */}
+          <div className="second-section-title-wrap-2">
+            <div className="reflections-title-container">
+              <h2 className="second-section-title">What pushes me </h2>
+              <span className="reflections-pop">forward</span>
+            </div>
+
+            <progress value={forwardCount} max={3} className="progress-main">
+              2
+            </progress>
           </div>
-          <progress value={worldCount} max={3} className="progress-main">
-            2
-          </progress>
+          <div className="button-grid-box-2">
+            {gridSecond.map((buttonId, index) => {
+              const btn = buttons.find((b) => b.id === buttonId);
+              const iconPath = iconMap[btn?.name];
+              return (
+                <div
+                  key={index}
+                  className={`grid-slot ${
+                    selectedForPlacement ? "second-button-selected" : ""
+                  }`}
+                >
+                  {btn ? (
+                    <div className="dropped-button">
+                      <Button
+                        id={index}
+                        label={btn.name}
+                        iconPath={iconPath}
+                        gradient={btn.gradient}
+                        action={removeFromGrid}
+                        extraArg={"forward"}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      {placedButtonsFirst.length >= 3 ? (
+                        <button className="drop-box-text">
+                          <img
+                            src="src\assets\icons\check.svg"
+                            alt="check icon"
+                            style={{ filter: "invert(1)" }}
+                          />
+                        </button>
+                      ) : (
+                        <button
+                          className="drop-box"
+                          onClick={() => handlePlaceInGrid("forward", index)}
+                        >
+                          +
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>{" "}
+          {placedButtonsFirst.length >= 3 ? (
+            <p className="section-status-1">
+              All values placed. Ready to continue?
+            </p>
+          ) : (
+            <p className="section-status-1">
+              Placed: {placedButtonsFirst.length} out of 3
+            </p>
+          )}
         </div>
-        <div className="button-grid-box">
-          {gridFifth.map((buttonId, index) => {
-            const btn = buttons.find((b) => b.id === buttonId);
-            const iconPath = iconMap[btn?.name];
-            return (
-              <div
-                key={index}
-                className={`grid-slot ${
-                  selectedForPlacement ? "second-button-selected" : ""
-                }`}
-              >
-                {btn ? (
-                  <>
-                    <Button
-                      id={index}
-                      label={btn.name}
-                      iconPath={iconPath}
-                      gradient={btn.gradient}
-                      action={removeFromGrid}
-                      extraArg={"world"}
-                    />
-                  </>
-                ) : (
-                  <button
-                    className="drop-box"
-                    onClick={() => handlePlaceInGrid("world", index)}
-                  >
-                    tap to select
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>{" "}
-        {/* ----------------------------------------------------  */}
-        <div className="second-section-title-wrap-2">
-          <div className="reflections-title-container">
-            <h2 className="second-section-title">I need</h2>{" "}
-            <h2 className="second-section-title">
-              for <span className="reflections-pop">myself</span>
-            </h2>
+        <div className="grid-reflection-2">
+          <div className="second-section-title-wrap">
+            <div className="reflections-title-container">
+              <h2 className="second-section-title">What I</h2>
+              <span className="reflections-pop">influence</span>
+            </div>
+            <progress value={influenceCount} max={3} className="progress-main">
+              2
+            </progress>
           </div>
-          <progress value={myselfCount} max={3} className="progress-main">
-            2
-          </progress>
+          <div className="button-grid-box">
+            {gridThird.map((buttonId, index) => {
+              const btn = buttons.find((b) => b.id === buttonId);
+              const iconPath = iconMap[btn?.name];
+              return (
+                <div
+                  key={index}
+                  className={`grid-slot ${
+                    selectedForPlacement ? "second-button-selected" : ""
+                  }`}
+                >
+                  {btn ? (
+                    <>
+                      <Button
+                        id={index}
+                        label={btn.name}
+                        iconPath={iconPath}
+                        gradient={btn.gradient}
+                        action={removeFromGrid}
+                        extraArg={"influence"}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      {placedButtonSecond.length >= 3 ? (
+                        <button className="drop-box-text">
+                          <img
+                            src="src\assets\icons\check.svg"
+                            alt="check icon"
+                            style={{ filter: "invert(1)" }}
+                          />
+                        </button>
+                      ) : (
+                        <button
+                          className="drop-box"
+                          onClick={() => handlePlaceInGrid("influence", index)}
+                        >
+                          +
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>{" "}
+          {placedButtonSecond.length >= 3 ? (
+            <p className="section-status-2">
+              All values placed. Ready to continue?
+            </p>
+          ) : (
+            <p className="section-status-2">
+              Placed: {placedButtonSecond.length} out of 3
+            </p>
+          )}
+          {/* ----------------------------------------------------  */}
+          <div className="second-section-title-wrap-2">
+            <div className="reflections-title-container">
+              <h2 className="second-section-title">Things I need to</h2>
+              <span className="reflections-pop">accept</span>
+            </div>
+            <progress value={acceptCount} max={3} className="progress-main">
+              2
+            </progress>
+          </div>
+          <div className="button-grid-box-2">
+            {gridFourth.map((buttonId, index) => {
+              const btn = buttons.find((b) => b.id === buttonId);
+              const iconPath = iconMap[btn?.name];
+              return (
+                <div
+                  key={index}
+                  className={`grid-slot ${
+                    selectedForPlacement ? "second-button-selected" : ""
+                  }`}
+                >
+                  {btn ? (
+                    <div className="dropped-button">
+                      <Button
+                        id={index}
+                        label={btn.name}
+                        iconPath={iconPath}
+                        gradient={btn.gradient}
+                        action={removeFromGrid}
+                        extraArg={"accept"}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      {placedButtonSecond.length >= 3 ? (
+                        <button className="drop-box-text">
+                          <img
+                            src="src\assets\icons\check.svg"
+                            alt="check icon"
+                            style={{ filter: "invert(1)" }}
+                          />
+                        </button>
+                      ) : (
+                        <button
+                          className="drop-box"
+                          onClick={() => handlePlaceInGrid("accept", index)}
+                        >
+                          +
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>{" "}
+        </div>{" "}
+        {/* ---------------------------------------------------------------------LAST */}
+        <div className="grid-reflection-3">
+          <div className="second-section-title-wrap">
+            <div className="reflections-title-container">
+              <h2 className="second-section-title-world">The world </h2>
+
+              <h2 className="second-section-title">
+                {" "}
+                <span className="reflections-pop-expects">expects </span>
+                from me
+              </h2>
+            </div>
+            <progress value={worldCount} max={3} className="progress-main">
+              2
+            </progress>
+          </div>
+          <div className="button-grid-box">
+            {gridFifth.map((buttonId, index) => {
+              const btn = buttons.find((b) => b.id === buttonId);
+              const iconPath = iconMap[btn?.name];
+              return (
+                <div
+                  key={index}
+                  className={`grid-slot ${
+                    selectedForPlacement ? "second-button-selected" : ""
+                  }`}
+                >
+                  {btn ? (
+                    <>
+                      <Button
+                        id={index}
+                        label={btn.name}
+                        iconPath={iconPath}
+                        gradient={btn.gradient}
+                        action={removeFromGrid}
+                        extraArg={"world"}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      {placedButtonThird.length >= 3 ? (
+                        <button className="drop-box-text">
+                          <img
+                            src="src\assets\icons\check.svg"
+                            alt="check icon"
+                            style={{ filter: "invert(1)" }}
+                          />
+                        </button>
+                      ) : (
+                        <button
+                          className="drop-box"
+                          onClick={() => handlePlaceInGrid("world", index)}
+                        >
+                          +
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>{" "}
+          {placedButtonThird.length >= 3 ? (
+            <p className="section-status-3">
+              All values placed. Ready to continue?
+            </p>
+          ) : (
+            <p className="section-status-3">
+              Placed: {placedButtonThird.length} out of 3
+            </p>
+          )}
+          {/* ----------------------------------------------------  */}
+          <div className="second-section-title-wrap-2">
+            <div className="reflections-title-container">
+              <h2 className="second-section-title">What I need for</h2>{" "}
+              <span className="reflections-pop">myself</span>
+            </div>
+            <progress value={myselfCount} max={3} className="progress-main">
+              2
+            </progress>
+          </div>
+          <div className="button-grid-box-2">
+            {gridSixth.map((buttonId, index) => {
+              const btn = buttons.find((b) => b.id === buttonId);
+              const iconPath = iconMap[btn?.name];
+              return (
+                <div
+                  key={index}
+                  className={`grid-slot ${
+                    selectedForPlacement ? "second-button-selected" : ""
+                  }`}
+                >
+                  {btn ? (
+                    <div className="dropped-button">
+                      <Button
+                        id={index}
+                        label={btn.name}
+                        iconPath={iconPath}
+                        gradient={btn.gradient}
+                        action={removeFromGrid}
+                        extraArg={"myself"}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      {placedButtonThird.length >= 3 ? (
+                        <button className="drop-box-text">
+                          <img
+                            src="src\assets\icons\check.svg"
+                            alt="check icon"
+                            style={{ filter: "invert(1)" }}
+                          />
+                        </button>
+                      ) : (
+                        <button
+                          className="drop-box"
+                          onClick={() => handlePlaceInGrid("myself", index)}
+                        >
+                          +
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>{" "}
         </div>
-        <div className="button-grid-box-2">
-          {gridSixth.map((buttonId, index) => {
-            const btn = buttons.find((b) => b.id === buttonId);
-            const iconPath = iconMap[btn?.name];
-            return (
-              <div
-                key={index}
-                className={`grid-slot ${
-                  selectedForPlacement ? "second-button-selected" : ""
-                }`}
-              >
-                {btn ? (
-                  <div className="dropped-button">
-                    <Button
-                      id={index}
-                      label={btn.name}
-                      iconPath={iconPath}
-                      gradient={btn.gradient}
-                      action={removeFromGrid}
-                      extraArg={"myself"}
-                    />
-                  </div>
-                ) : (
-                  <button
-                    className="drop-box"
-                    onClick={() => handlePlaceInGrid("myself", index)}
-                  >
-                    tap to select
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>{" "}
-      </div>
-      <div style={{ height: "200px" }}></div>
-      {isShowingInsights && (
-        <div className="modal-insights">
-          <div>
-            <h5>{selectedGuidance.message}</h5>
-            <span className="date-text">
-              added: {selectedGuidance.date}
-            </span>{" "}
+        {alreadyPlaced && (
+          <div
+            className="modal-already-placed"
+            onClick={() => setAlreadyPlaced(false)}
+          >
+            You’ve already placed this. Tap to remove.
           </div>
-          <button className="close-modal" onClick={closeGuidance}>
-            close
+        )}
+      </section>
+      <div style={{ height: "0px" }}></div>
+      {returnMessage ? (
+        <p className="return-message fading">
+          Take a moment to reflect before receiving insight from others
+        </p>
+      ) : (
+        <p className="return-message"></p>
+      )}
+      {alreadyReadMessage && (
+        <div
+          className="modal-already-read"
+          onClick={() => setAlreadyReadMessage(false)}
+        >
+          This message has already been read. New reflections bring new wisdom.
+        </div>
+      )}
+      {alreadySharedGuidance && (
+        <div
+          className="modal-already-read"
+          onClick={() => setAlreadySharedGuidance(false)}
+        >
+          You've already shared your wisdom. Thank you!
+        </div>
+      )}
+      {shareGuidance && (
+        <div className="share-guidance-modal">
+          <p className="share-title">
+            A reflection for someone walking a similar path.
+          </p>
+          <span>Leave a message:</span>
+          <select>
+            {guidance.map((item) => (
+              <option key={item.id}>{item.message}</option>
+            ))}
+          </select>
+          <button className="save-guidance-button" onClick={closeShareModal}>
+            save
           </button>
+        </div>
+      )}
+      {finalThanks && (
+        <div className="final-thanks" onClick={() => setFinalThanks(false)}>
+          {" "}
+          <h2>A message for someone who sees the world like you do. </h2>
+          <h2 className="thanks-text">Thank you!</h2>
+        </div>
+      )}
+      {isShowingInsights && (
+        <div className={`modal-insights ${isFadingOut ? "fade-out" : ""}`}>
+          <h5 className="insight-message">"{selectedGuidance.message}"</h5>{" "}
+          <div className="modal-container-text">
+            <div className="date-message-wrap">
+              <span className="date-text">
+                <span className="message-small">added:</span>{" "}
+                {selectedGuidance.date}
+              </span>{" "}
+              <span className="date-bold">
+                This message disappears after reading.
+              </span>{" "}
+            </div>
+            <button className="close-modal" onClick={closeGuidance}>
+              close
+            </button>{" "}
+          </div>
         </div>
       )}
       <div className="insight-section">
         {" "}
         <div className="insight-buttons-container">
-          get a reflection from others
+          Receive guidance from someone who shares your values
           <button className="insight-buttons" onClick={showInsights}>
             <img
               src="src\assets\icons\messages-square.svg"
@@ -712,13 +986,20 @@ function App() {
         </div>
         <div className="insight-buttons-container">
           leave a guiding thought
-          <button className="insight-buttons" onClick={leaveGuidance}>
+          <button className="insight-buttons" onClick={handleShareGuidance}>
             <img
               src="src\assets\icons\message-square-share.svg"
               alt="message icon"
             />
           </button>
         </div>
+      </div>
+      <div className="project-by">
+        <h6>project by</h6> <h3>Julian Sandström</h3>{" "}
+        <button className="reset-button" onClick={handleReset}>
+          reset
+        </button>
+        <img src="\src\assets\logo.svg" alt="mekoja logo" className="logo" />
       </div>
       <div style={{ height: "200px" }}></div>
     </div>

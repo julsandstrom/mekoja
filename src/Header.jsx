@@ -55,7 +55,11 @@ const Header = ({
               </span>{" "}
               selected
             </h4>
-            <progress className="progress-main" value={selectedCount} max={3} />
+            <progress
+              className="progress-selection"
+              value={selectedCount}
+              max={3}
+            />
           </div>
           <button onClick={handleRandomize} className="random-button">
             <img src="src\assets\icons\dices.svg" alt="dice icon" /> randomize
