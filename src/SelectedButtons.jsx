@@ -20,7 +20,7 @@ const SelectedButtons = ({
               label={btn.name}
               action={() => handleSelectForPlacement(btn.id)}
               gradient={btn.gradient}
-              className={`second-buttons ${
+              className={`second-buttons  ${
                 selectedForPlacement === btn.id ? "button-selected-modal" : ""
               }`}
             />
